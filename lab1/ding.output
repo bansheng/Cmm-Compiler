@@ -1,0 +1,3879 @@
+语法
+
+    0 $accept: Program $end
+
+    1 Program: ProgramFileds MainFunction
+    2        | ProgramFileds
+
+    3 ProgramFileds: ProgramFiled
+    4              | ProgramFileds ProgramFiled
+
+    5 ProgramFiled: VariableDef
+    6             | FunctionDef
+    7             | ClassDef
+
+    8 VariableDef: Variable SPSEMICOLON
+    9            | Variable CommaIdentifiers SPSEMICOLON
+   10            | error SPSEMICOLON
+
+   11 CommaIdentifiers: SPCOMMA IDENTIFIER
+   12                 | CommaIdentifiers SPCOMMA IDENTIFIER
+
+   13 Variable: Type IDENTIFIER
+   14         | Variable SPLEFTBRACKET IDENTIFIER SPRIGHTBRACKET
+   15         | Variable SPLEFTBRACKET CONSTANTINT SPRIGHTBRACKET
+
+   16 Type: TYPEINTEGER
+   17     | TYPEFLOAT
+   18     | TYPEBOOL
+   19     | TYPESTRING
+   20     | TYPEVOID
+   21     | KEYCLASS IDENTIFIER
+   22     | Type SPLEFTBRACKET SPRIGHTBRACKET
+
+   23 Variables: Variable
+   24          | Variables SPCOMMA Variable
+
+   25 Formals: %empty
+   26        | Variables
+
+   27 MainFunction: KEYSTATIC TYPEVOID KEYMAIN SPLEFTPRNT SPRIGHTPRNT StmtBlock
+
+   28 FunctionDef: Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+   29            | KEYSTATIC Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+   30 ClassDef: KEYCLASS IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+   31         | KEYCLASS IDENTIFIER KEYEXTENDS IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+   32         | error SPRIGHTBRACE
+
+   33 PriviligeFields: PriviligeField
+   34                | PriviligeFields PriviligeField
+
+   35 PriviligeField: PublicDeclaration Fields
+   36               | ProtectedDeclaration Fields
+   37               | PrivateDeclaration Fields
+
+   38 PublicDeclaration: KEYPUBLIC SPCOLON
+
+   39 ProtectedDeclaration: KEYPROTECTED SPCOLON
+
+   40 PrivateDeclaration: KEYPRIVATE SPCOLON
+
+   41 Fields: %empty
+   42       | Field Fields
+
+   43 Field: VariableDef
+   44      | FunctionDef
+
+   45 StmtBlock: SPLEFTBRACE Stmts SPRIGHTBRACE
+   46          | error SPRIGHTBRACE
+
+   47 Stmts: %empty
+   48      | Stmt Stmts
+
+   49 Stmt: VariableDef
+   50     | SimpleStmt SPSEMICOLON
+   51     | IfStmt
+   52     | WhileStmt
+   53     | ForStmt
+   54     | BreakStmt SPSEMICOLON
+   55     | ContinueStmt SPSEMICOLON
+   56     | ReturnStmt SPSEMICOLON
+   57     | PrintStmt SPSEMICOLON
+   58     | StmtBlock
+
+   59 SimpleStmt: %empty
+   60           | LValue OPASSIGN Expr
+   61           | SelfLvalue
+   62           | Call
+
+   63 LValue: IDENTIFIER
+   64       | Expr SPDOT IDENTIFIER
+   65       | Expr SPLEFTBRACKET Expr SPRIGHTBRACKET
+   66       | SelfLvalue
+
+   67 SelfLvalue: LValue OPSELFADD
+   68           | LValue OPSELFMINUS
+
+   69 Call: IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   70     | Expr SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+
+   71 Actuals: %empty
+   72        | Exprs
+
+   73 Exprs: Expr
+   74      | Exprs SPCOMMA Expr
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt
+   76        | KEYFOR SPLEFTPRNT Variable SPCOLON IDENTIFIER SPRIGHTPRNT Stmt
+
+   77 WhileStmt: KEYWHILE SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt
+
+   78 IfStmt: KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt
+   79       | KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt KEYELSE Stmt
+
+   80 ReturnStmt: KEYRETURN
+   81           | KEYRETURN Expr
+
+   82 BreakStmt: KEYBREAK
+
+   83 ContinueStmt: KEYCONTINUE
+
+   84 PrintStmt: KEYPRINT SPLEFTPRNT Exprs SPRIGHTPRNT
+
+   85 BoolExpr: Expr
+
+   86 Expr: Constant
+   87     | LValue
+   88     | KEYTHIS
+   89     | Call
+   90     | SPLEFTPRNT Expr SPRIGHTPRNT
+   91     | Expr OPPLUS Expr
+   92     | Expr OPMINUS Expr
+   93     | Expr OPMULTIPLY Expr
+   94     | Expr OPDIVIDE Expr
+   95     | OPMINUS Expr
+   96     | Expr OPLIGHT Expr
+   97     | Expr OPLIGHTEQ Expr
+   98     | Expr OPGREAT Expr
+   99     | Expr OPGREATEQ Expr
+  100     | Expr OPEQUAL Expr
+  101     | Expr OPNOTEQUAL Expr
+  102     | Expr OPAND Expr
+  103     | Expr OPOR Expr
+  104     | OPNOT Expr
+  105     | KEYREADINTEGER SPLEFTPRNT SPRIGHTPRNT
+  106     | KEYREADLINE SPLEFTPRNT SPRIGHTPRNT
+  107     | KEYREADFLOAT SPLEFTPRNT SPRIGHTPRNT
+  108     | KEYNEW IDENTIFIER SPLEFTPRNT SPRIGHTPRNT
+  109     | KEYNEW Type SPLEFTBRACKET Expr SPRIGHTBRACKET
+  110     | KEYINSTANCEOF SPLEFTPRNT Expr SPCOMMA IDENTIFIER SPRIGHTPRNT
+  111     | SPLEFTPRNT KEYCLASS IDENTIFIER SPRIGHTPRNT Expr
+
+  112 Constant: CONSTANTINT
+  113         | CONSTANTFLOAT
+  114         | CONSTANTBOOL
+  115         | CONSTANTSTRING
+  116         | CONSTANTNULL
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 10 32 46
+SPSEMICOLON (258) 8 9 10 50 54 55 56 57 75
+SPCOLON (259) 38 39 40 76
+SPCOMMA (260) 11 12 24 74 110
+SPDOT (261) 64 70
+SPLEFTBRACE (262) 30 31 45
+SPRIGHTBRACE (263) 30 31 32 45 46
+SPLEFTPRNT (264) 27 28 29 69 70 75 76 77 78 79 84 90 105 106 107 108
+    110 111
+SPRIGHTPRNT (265) 27 28 29 69 70 75 76 77 78 79 84 90 105 106 107 108
+    110 111
+SPLEFTBRACKET (266) 14 15 22 65 109
+SPRIGHTBRACKET (267) 14 15 22 65 109
+OPPLUS (268) 91
+OPMINUS (269) 92 95
+OPMULTIPLY (270) 93
+OPDIVIDE (271) 94
+OPASSIGN (272) 60
+OPAND (273) 102
+OPOR (274) 103
+OPNOT (275) 104
+OPEQUAL (276) 100
+OPNOTEQUAL (277) 101
+OPGREAT (278) 98
+OPLIGHT (279) 96
+OPGREATEQ (280) 99
+OPLIGHTEQ (281) 97
+OPSELFADD (282) 67
+OPSELFMINUS (283) 68
+TYPEVOID (284) 20 27
+TYPEINTEGER (285) 16
+TYPEFLOAT (286) 17
+TYPEBOOL (287) 18
+TYPESTRING (288) 19
+KEYPUBLIC (289) 38
+KEYPRIVATE (290) 40
+KEYPROTECTED (291) 39
+KEYMAIN (292) 27
+KEYCLASS (293) 21 30 31 111
+KEYNEW (294) 108 109
+KEYEXTENDS (295) 31
+KEYTHIS (296) 88
+KEYINSTANCEOF (297) 110
+KEYIF (298) 78 79
+KEYELSE (299) 79
+KEYFOR (300) 75 76
+KEYWHILE (301) 77
+KEYBREAK (302) 82
+KEYCONTINUE (303) 83
+KEYRETURN (304) 80 81
+KEYSTATIC (305) 27 29
+KEYPRINT (306) 84
+KEYREADINTEGER (307) 105
+KEYREADLINE (308) 106
+KEYREADFLOAT (309) 107
+CONSTANTNULL (310) 116
+CONSTANTBOOL (311) 114
+CONSTANTINT (312) 15 112
+CONSTANTFLOAT (313) 113
+CONSTANTSTRING (314) 115
+IDENTIFIER (315) 11 12 13 14 21 28 29 30 31 63 64 69 70 76 108 110
+    111
+LOWER_THAN_ELSE (316)
+
+
+Nonterminals, with rules where they appear
+
+$accept (62)
+    左： 0
+Program (63)
+    左： 1 2, 右： 0
+ProgramFileds (64)
+    左： 3 4, 右： 1 2 4
+ProgramFiled (65)
+    左： 5 6 7, 右： 3 4
+VariableDef (66)
+    左： 8 9 10, 右： 5 43 49
+CommaIdentifiers (67)
+    左： 11 12, 右： 9 12
+Variable (68)
+    左： 13 14 15, 右： 8 9 14 15 23 24 76
+Type (69)
+    左： 16 17 18 19 20 21 22, 右： 13 22 28 29 109
+Variables (70)
+    左： 23 24, 右： 24 26
+Formals (71)
+    左： 25 26, 右： 28 29
+MainFunction (72)
+    左： 27, 右： 1
+FunctionDef (73)
+    左： 28 29, 右： 6 44
+ClassDef (74)
+    左： 30 31 32, 右： 7
+PriviligeFields (75)
+    左： 33 34, 右： 30 31 34
+PriviligeField (76)
+    左： 35 36 37, 右： 33 34
+PublicDeclaration (77)
+    左： 38, 右： 35
+ProtectedDeclaration (78)
+    左： 39, 右： 36
+PrivateDeclaration (79)
+    左： 40, 右： 37
+Fields (80)
+    左： 41 42, 右： 35 36 37 42
+Field (81)
+    左： 43 44, 右： 42
+StmtBlock (82)
+    左： 45 46, 右： 27 28 29 58
+Stmts (83)
+    左： 47 48, 右： 45 48
+Stmt (84)
+    左： 49 50 51 52 53 54 55 56 57 58, 右： 48 75 76 77 78 79
+SimpleStmt (85)
+    左： 59 60 61 62, 右： 50 75
+LValue (86)
+    左： 63 64 65 66, 右： 60 67 68 87
+SelfLvalue (87)
+    左： 67 68, 右： 61 66
+Call (88)
+    左： 69 70, 右： 62 89
+Actuals (89)
+    左： 71 72, 右： 69 70
+Exprs (90)
+    左： 73 74, 右： 72 74 84
+ForStmt (91)
+    左： 75 76, 右： 53
+WhileStmt (92)
+    左： 77, 右： 52
+IfStmt (93)
+    左： 78 79, 右： 51
+ReturnStmt (94)
+    左： 80 81, 右： 56
+BreakStmt (95)
+    左： 82, 右： 54
+ContinueStmt (96)
+    左： 83, 右： 55
+PrintStmt (97)
+    左： 84, 右： 57
+BoolExpr (98)
+    左： 85, 右： 75 77 78 79
+Expr (99)
+    左： 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103
+    104 105 106 107 108 109 110 111, 右： 60 64 65 70 73 74 81 85
+    90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 109 110 111
+Constant (100)
+    左： 112 113 114 115 116, 右： 86
+
+
+State 0
+
+    0 $accept: . Program $end
+
+    error        shift, and go to state 1
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 7
+    KEYSTATIC    shift, and go to state 8
+
+    Program        转到状态 9
+    ProgramFileds  转到状态 10
+    ProgramFiled   转到状态 11
+    VariableDef    转到状态 12
+    Variable       转到状态 13
+    Type           转到状态 14
+    FunctionDef    转到状态 15
+    ClassDef       转到状态 16
+
+
+State 1
+
+   10 VariableDef: error . SPSEMICOLON
+   32 ClassDef: error . SPRIGHTBRACE
+
+    SPSEMICOLON   shift, and go to state 17
+    SPRIGHTBRACE  shift, and go to state 18
+
+
+State 2
+
+   20 Type: TYPEVOID .
+
+    $default  reduce using rule 20 (Type)
+
+
+State 3
+
+   16 Type: TYPEINTEGER .
+
+    $default  reduce using rule 16 (Type)
+
+
+State 4
+
+   17 Type: TYPEFLOAT .
+
+    $default  reduce using rule 17 (Type)
+
+
+State 5
+
+   18 Type: TYPEBOOL .
+
+    $default  reduce using rule 18 (Type)
+
+
+State 6
+
+   19 Type: TYPESTRING .
+
+    $default  reduce using rule 19 (Type)
+
+
+State 7
+
+   21 Type: KEYCLASS . IDENTIFIER
+   30 ClassDef: KEYCLASS . IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+   31         | KEYCLASS . IDENTIFIER KEYEXTENDS IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+
+    IDENTIFIER  shift, and go to state 19
+
+
+State 8
+
+   29 FunctionDef: KEYSTATIC . Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+
+    Type  转到状态 21
+
+
+State 9
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 22
+
+
+State 10
+
+    1 Program: ProgramFileds . MainFunction
+    2        | ProgramFileds .
+    4 ProgramFileds: ProgramFileds . ProgramFiled
+
+    error        shift, and go to state 1
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 7
+    KEYSTATIC    shift, and go to state 23
+
+    $end  reduce using rule 2 (Program)
+
+    ProgramFiled  转到状态 24
+    VariableDef   转到状态 12
+    Variable      转到状态 13
+    Type          转到状态 14
+    MainFunction  转到状态 25
+    FunctionDef   转到状态 15
+    ClassDef      转到状态 16
+
+
+State 11
+
+    3 ProgramFileds: ProgramFiled .
+
+    $default  reduce using rule 3 (ProgramFileds)
+
+
+State 12
+
+    5 ProgramFiled: VariableDef .
+
+    $default  reduce using rule 5 (ProgramFiled)
+
+
+State 13
+
+    8 VariableDef: Variable . SPSEMICOLON
+    9            | Variable . CommaIdentifiers SPSEMICOLON
+   14 Variable: Variable . SPLEFTBRACKET IDENTIFIER SPRIGHTBRACKET
+   15         | Variable . SPLEFTBRACKET CONSTANTINT SPRIGHTBRACKET
+
+    SPSEMICOLON    shift, and go to state 26
+    SPCOMMA        shift, and go to state 27
+    SPLEFTBRACKET  shift, and go to state 28
+
+    CommaIdentifiers  转到状态 29
+
+
+State 14
+
+   13 Variable: Type . IDENTIFIER
+   22 Type: Type . SPLEFTBRACKET SPRIGHTBRACKET
+   28 FunctionDef: Type . IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+    SPLEFTBRACKET  shift, and go to state 30
+    IDENTIFIER     shift, and go to state 31
+
+
+State 15
+
+    6 ProgramFiled: FunctionDef .
+
+    $default  reduce using rule 6 (ProgramFiled)
+
+
+State 16
+
+    7 ProgramFiled: ClassDef .
+
+    $default  reduce using rule 7 (ProgramFiled)
+
+
+State 17
+
+   10 VariableDef: error SPSEMICOLON .
+
+    $default  reduce using rule 10 (VariableDef)
+
+
+State 18
+
+   32 ClassDef: error SPRIGHTBRACE .
+
+    $default  reduce using rule 32 (ClassDef)
+
+
+State 19
+
+   21 Type: KEYCLASS IDENTIFIER .
+   30 ClassDef: KEYCLASS IDENTIFIER . SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+   31         | KEYCLASS IDENTIFIER . KEYEXTENDS IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+
+    SPLEFTBRACE  shift, and go to state 32
+    KEYEXTENDS   shift, and go to state 33
+
+    $default  reduce using rule 21 (Type)
+
+
+State 20
+
+   21 Type: KEYCLASS . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 34
+
+
+State 21
+
+   22 Type: Type . SPLEFTBRACKET SPRIGHTBRACKET
+   29 FunctionDef: KEYSTATIC Type . IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+    SPLEFTBRACKET  shift, and go to state 30
+    IDENTIFIER     shift, and go to state 35
+
+
+State 22
+
+    0 $accept: Program $end .
+
+    $default  接受
+
+
+State 23
+
+   27 MainFunction: KEYSTATIC . TYPEVOID KEYMAIN SPLEFTPRNT SPRIGHTPRNT StmtBlock
+   29 FunctionDef: KEYSTATIC . Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+    TYPEVOID     shift, and go to state 36
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+
+    Type  转到状态 21
+
+
+State 24
+
+    4 ProgramFileds: ProgramFileds ProgramFiled .
+
+    $default  reduce using rule 4 (ProgramFileds)
+
+
+State 25
+
+    1 Program: ProgramFileds MainFunction .
+
+    $default  reduce using rule 1 (Program)
+
+
+State 26
+
+    8 VariableDef: Variable SPSEMICOLON .
+
+    $default  reduce using rule 8 (VariableDef)
+
+
+State 27
+
+   11 CommaIdentifiers: SPCOMMA . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 37
+
+
+State 28
+
+   14 Variable: Variable SPLEFTBRACKET . IDENTIFIER SPRIGHTBRACKET
+   15         | Variable SPLEFTBRACKET . CONSTANTINT SPRIGHTBRACKET
+
+    CONSTANTINT  shift, and go to state 38
+    IDENTIFIER   shift, and go to state 39
+
+
+State 29
+
+    9 VariableDef: Variable CommaIdentifiers . SPSEMICOLON
+   12 CommaIdentifiers: CommaIdentifiers . SPCOMMA IDENTIFIER
+
+    SPSEMICOLON  shift, and go to state 40
+    SPCOMMA      shift, and go to state 41
+
+
+State 30
+
+   22 Type: Type SPLEFTBRACKET . SPRIGHTBRACKET
+
+    SPRIGHTBRACKET  shift, and go to state 42
+
+
+State 31
+
+   13 Variable: Type IDENTIFIER .
+   28 FunctionDef: Type IDENTIFIER . SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+    SPLEFTPRNT  shift, and go to state 43
+
+    $default  reduce using rule 13 (Variable)
+
+
+State 32
+
+   30 ClassDef: KEYCLASS IDENTIFIER SPLEFTBRACE . PriviligeFields SPRIGHTBRACE
+
+    KEYPUBLIC     shift, and go to state 44
+    KEYPRIVATE    shift, and go to state 45
+    KEYPROTECTED  shift, and go to state 46
+
+    PriviligeFields       转到状态 47
+    PriviligeField        转到状态 48
+    PublicDeclaration     转到状态 49
+    ProtectedDeclaration  转到状态 50
+    PrivateDeclaration    转到状态 51
+
+
+State 33
+
+   31 ClassDef: KEYCLASS IDENTIFIER KEYEXTENDS . IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+
+    IDENTIFIER  shift, and go to state 52
+
+
+State 34
+
+   21 Type: KEYCLASS IDENTIFIER .
+
+    $default  reduce using rule 21 (Type)
+
+
+State 35
+
+   29 FunctionDef: KEYSTATIC Type IDENTIFIER . SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock
+
+    SPLEFTPRNT  shift, and go to state 53
+
+
+State 36
+
+   20 Type: TYPEVOID .
+   27 MainFunction: KEYSTATIC TYPEVOID . KEYMAIN SPLEFTPRNT SPRIGHTPRNT StmtBlock
+
+    KEYMAIN  shift, and go to state 54
+
+    $default  reduce using rule 20 (Type)
+
+
+State 37
+
+   11 CommaIdentifiers: SPCOMMA IDENTIFIER .
+
+    $default  reduce using rule 11 (CommaIdentifiers)
+
+
+State 38
+
+   15 Variable: Variable SPLEFTBRACKET CONSTANTINT . SPRIGHTBRACKET
+
+    SPRIGHTBRACKET  shift, and go to state 55
+
+
+State 39
+
+   14 Variable: Variable SPLEFTBRACKET IDENTIFIER . SPRIGHTBRACKET
+
+    SPRIGHTBRACKET  shift, and go to state 56
+
+
+State 40
+
+    9 VariableDef: Variable CommaIdentifiers SPSEMICOLON .
+
+    $default  reduce using rule 9 (VariableDef)
+
+
+State 41
+
+   12 CommaIdentifiers: CommaIdentifiers SPCOMMA . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 57
+
+
+State 42
+
+   22 Type: Type SPLEFTBRACKET SPRIGHTBRACKET .
+
+    $default  reduce using rule 22 (Type)
+
+
+State 43
+
+   28 FunctionDef: Type IDENTIFIER SPLEFTPRNT . Formals SPRIGHTPRNT StmtBlock
+
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+
+    $default  reduce using rule 25 (Formals)
+
+    Variable   转到状态 58
+    Type       转到状态 59
+    Variables  转到状态 60
+    Formals    转到状态 61
+
+
+State 44
+
+   38 PublicDeclaration: KEYPUBLIC . SPCOLON
+
+    SPCOLON  shift, and go to state 62
+
+
+State 45
+
+   40 PrivateDeclaration: KEYPRIVATE . SPCOLON
+
+    SPCOLON  shift, and go to state 63
+
+
+State 46
+
+   39 ProtectedDeclaration: KEYPROTECTED . SPCOLON
+
+    SPCOLON  shift, and go to state 64
+
+
+State 47
+
+   30 ClassDef: KEYCLASS IDENTIFIER SPLEFTBRACE PriviligeFields . SPRIGHTBRACE
+   34 PriviligeFields: PriviligeFields . PriviligeField
+
+    SPRIGHTBRACE  shift, and go to state 65
+    KEYPUBLIC     shift, and go to state 44
+    KEYPRIVATE    shift, and go to state 45
+    KEYPROTECTED  shift, and go to state 46
+
+    PriviligeField        转到状态 66
+    PublicDeclaration     转到状态 49
+    ProtectedDeclaration  转到状态 50
+    PrivateDeclaration    转到状态 51
+
+
+State 48
+
+   33 PriviligeFields: PriviligeField .
+
+    $default  reduce using rule 33 (PriviligeFields)
+
+
+State 49
+
+   35 PriviligeField: PublicDeclaration . Fields
+
+    error        shift, and go to state 67
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+    KEYSTATIC    shift, and go to state 8
+
+    SPRIGHTBRACE  reduce using rule 41 (Fields)
+    KEYPUBLIC     reduce using rule 41 (Fields)
+    KEYPRIVATE    reduce using rule 41 (Fields)
+    KEYPROTECTED  reduce using rule 41 (Fields)
+
+    VariableDef  转到状态 68
+    Variable     转到状态 13
+    Type         转到状态 14
+    FunctionDef  转到状态 69
+    Fields       转到状态 70
+    Field        转到状态 71
+
+
+State 50
+
+   36 PriviligeField: ProtectedDeclaration . Fields
+
+    error        shift, and go to state 67
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+    KEYSTATIC    shift, and go to state 8
+
+    SPRIGHTBRACE  reduce using rule 41 (Fields)
+    KEYPUBLIC     reduce using rule 41 (Fields)
+    KEYPRIVATE    reduce using rule 41 (Fields)
+    KEYPROTECTED  reduce using rule 41 (Fields)
+
+    VariableDef  转到状态 68
+    Variable     转到状态 13
+    Type         转到状态 14
+    FunctionDef  转到状态 69
+    Fields       转到状态 72
+    Field        转到状态 71
+
+
+State 51
+
+   37 PriviligeField: PrivateDeclaration . Fields
+
+    error        shift, and go to state 67
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+    KEYSTATIC    shift, and go to state 8
+
+    SPRIGHTBRACE  reduce using rule 41 (Fields)
+    KEYPUBLIC     reduce using rule 41 (Fields)
+    KEYPRIVATE    reduce using rule 41 (Fields)
+    KEYPROTECTED  reduce using rule 41 (Fields)
+
+    VariableDef  转到状态 68
+    Variable     转到状态 13
+    Type         转到状态 14
+    FunctionDef  转到状态 69
+    Fields       转到状态 73
+    Field        转到状态 71
+
+
+State 52
+
+   31 ClassDef: KEYCLASS IDENTIFIER KEYEXTENDS IDENTIFIER . SPLEFTBRACE PriviligeFields SPRIGHTBRACE
+
+    SPLEFTBRACE  shift, and go to state 74
+
+
+State 53
+
+   29 FunctionDef: KEYSTATIC Type IDENTIFIER SPLEFTPRNT . Formals SPRIGHTPRNT StmtBlock
+
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+
+    $default  reduce using rule 25 (Formals)
+
+    Variable   转到状态 58
+    Type       转到状态 59
+    Variables  转到状态 60
+    Formals    转到状态 75
+
+
+State 54
+
+   27 MainFunction: KEYSTATIC TYPEVOID KEYMAIN . SPLEFTPRNT SPRIGHTPRNT StmtBlock
+
+    SPLEFTPRNT  shift, and go to state 76
+
+
+State 55
+
+   15 Variable: Variable SPLEFTBRACKET CONSTANTINT SPRIGHTBRACKET .
+
+    $default  reduce using rule 15 (Variable)
+
+
+State 56
+
+   14 Variable: Variable SPLEFTBRACKET IDENTIFIER SPRIGHTBRACKET .
+
+    $default  reduce using rule 14 (Variable)
+
+
+State 57
+
+   12 CommaIdentifiers: CommaIdentifiers SPCOMMA IDENTIFIER .
+
+    $default  reduce using rule 12 (CommaIdentifiers)
+
+
+State 58
+
+   14 Variable: Variable . SPLEFTBRACKET IDENTIFIER SPRIGHTBRACKET
+   15         | Variable . SPLEFTBRACKET CONSTANTINT SPRIGHTBRACKET
+   23 Variables: Variable .
+
+    SPLEFTBRACKET  shift, and go to state 28
+
+    $default  reduce using rule 23 (Variables)
+
+
+State 59
+
+   13 Variable: Type . IDENTIFIER
+   22 Type: Type . SPLEFTBRACKET SPRIGHTBRACKET
+
+    SPLEFTBRACKET  shift, and go to state 30
+    IDENTIFIER     shift, and go to state 77
+
+
+State 60
+
+   24 Variables: Variables . SPCOMMA Variable
+   26 Formals: Variables .
+
+    SPCOMMA  shift, and go to state 78
+
+    $default  reduce using rule 26 (Formals)
+
+
+State 61
+
+   28 FunctionDef: Type IDENTIFIER SPLEFTPRNT Formals . SPRIGHTPRNT StmtBlock
+
+    SPRIGHTPRNT  shift, and go to state 79
+
+
+State 62
+
+   38 PublicDeclaration: KEYPUBLIC SPCOLON .
+
+    $default  reduce using rule 38 (PublicDeclaration)
+
+
+State 63
+
+   40 PrivateDeclaration: KEYPRIVATE SPCOLON .
+
+    $default  reduce using rule 40 (PrivateDeclaration)
+
+
+State 64
+
+   39 ProtectedDeclaration: KEYPROTECTED SPCOLON .
+
+    $default  reduce using rule 39 (ProtectedDeclaration)
+
+
+State 65
+
+   30 ClassDef: KEYCLASS IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE .
+
+    $default  reduce using rule 30 (ClassDef)
+
+
+State 66
+
+   34 PriviligeFields: PriviligeFields PriviligeField .
+
+    $default  reduce using rule 34 (PriviligeFields)
+
+
+State 67
+
+   10 VariableDef: error . SPSEMICOLON
+
+    SPSEMICOLON  shift, and go to state 17
+
+
+State 68
+
+   43 Field: VariableDef .
+
+    $default  reduce using rule 43 (Field)
+
+
+State 69
+
+   44 Field: FunctionDef .
+
+    $default  reduce using rule 44 (Field)
+
+
+State 70
+
+   35 PriviligeField: PublicDeclaration Fields .
+
+    $default  reduce using rule 35 (PriviligeField)
+
+
+State 71
+
+   42 Fields: Field . Fields
+
+    error        shift, and go to state 67
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+    KEYSTATIC    shift, and go to state 8
+
+    SPRIGHTBRACE  reduce using rule 41 (Fields)
+    KEYPUBLIC     reduce using rule 41 (Fields)
+    KEYPRIVATE    reduce using rule 41 (Fields)
+    KEYPROTECTED  reduce using rule 41 (Fields)
+
+    VariableDef  转到状态 68
+    Variable     转到状态 13
+    Type         转到状态 14
+    FunctionDef  转到状态 69
+    Fields       转到状态 80
+    Field        转到状态 71
+
+
+State 72
+
+   36 PriviligeField: ProtectedDeclaration Fields .
+
+    $default  reduce using rule 36 (PriviligeField)
+
+
+State 73
+
+   37 PriviligeField: PrivateDeclaration Fields .
+
+    $default  reduce using rule 37 (PriviligeField)
+
+
+State 74
+
+   31 ClassDef: KEYCLASS IDENTIFIER KEYEXTENDS IDENTIFIER SPLEFTBRACE . PriviligeFields SPRIGHTBRACE
+
+    KEYPUBLIC     shift, and go to state 44
+    KEYPRIVATE    shift, and go to state 45
+    KEYPROTECTED  shift, and go to state 46
+
+    PriviligeFields       转到状态 81
+    PriviligeField        转到状态 48
+    PublicDeclaration     转到状态 49
+    ProtectedDeclaration  转到状态 50
+    PrivateDeclaration    转到状态 51
+
+
+State 75
+
+   29 FunctionDef: KEYSTATIC Type IDENTIFIER SPLEFTPRNT Formals . SPRIGHTPRNT StmtBlock
+
+    SPRIGHTPRNT  shift, and go to state 82
+
+
+State 76
+
+   27 MainFunction: KEYSTATIC TYPEVOID KEYMAIN SPLEFTPRNT . SPRIGHTPRNT StmtBlock
+
+    SPRIGHTPRNT  shift, and go to state 83
+
+
+State 77
+
+   13 Variable: Type IDENTIFIER .
+
+    $default  reduce using rule 13 (Variable)
+
+
+State 78
+
+   24 Variables: Variables SPCOMMA . Variable
+
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+
+    Variable  转到状态 84
+    Type      转到状态 59
+
+
+State 79
+
+   28 FunctionDef: Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT . StmtBlock
+
+    error        shift, and go to state 85
+    SPLEFTBRACE  shift, and go to state 86
+
+    StmtBlock  转到状态 87
+
+
+State 80
+
+   42 Fields: Field Fields .
+
+    $default  reduce using rule 42 (Fields)
+
+
+State 81
+
+   31 ClassDef: KEYCLASS IDENTIFIER KEYEXTENDS IDENTIFIER SPLEFTBRACE PriviligeFields . SPRIGHTBRACE
+   34 PriviligeFields: PriviligeFields . PriviligeField
+
+    SPRIGHTBRACE  shift, and go to state 88
+    KEYPUBLIC     shift, and go to state 44
+    KEYPRIVATE    shift, and go to state 45
+    KEYPROTECTED  shift, and go to state 46
+
+    PriviligeField        转到状态 66
+    PublicDeclaration     转到状态 49
+    ProtectedDeclaration  转到状态 50
+    PrivateDeclaration    转到状态 51
+
+
+State 82
+
+   29 FunctionDef: KEYSTATIC Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT . StmtBlock
+
+    error        shift, and go to state 85
+    SPLEFTBRACE  shift, and go to state 86
+
+    StmtBlock  转到状态 89
+
+
+State 83
+
+   27 MainFunction: KEYSTATIC TYPEVOID KEYMAIN SPLEFTPRNT SPRIGHTPRNT . StmtBlock
+
+    error        shift, and go to state 85
+    SPLEFTBRACE  shift, and go to state 86
+
+    StmtBlock  转到状态 90
+
+
+State 84
+
+   14 Variable: Variable . SPLEFTBRACKET IDENTIFIER SPRIGHTBRACKET
+   15         | Variable . SPLEFTBRACKET CONSTANTINT SPRIGHTBRACKET
+   24 Variables: Variables SPCOMMA Variable .
+
+    SPLEFTBRACKET  shift, and go to state 28
+
+    $default  reduce using rule 24 (Variables)
+
+
+State 85
+
+   46 StmtBlock: error . SPRIGHTBRACE
+
+    SPRIGHTBRACE  shift, and go to state 91
+
+
+State 86
+
+   45 StmtBlock: SPLEFTBRACE . Stmts SPRIGHTBRACE
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON   reduce using rule 59 (SimpleStmt)
+    SPRIGHTBRACE  reduce using rule 47 (Stmts)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmts         转到状态 117
+    Stmt          转到状态 118
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 87
+
+   28 FunctionDef: Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock .
+
+    $default  reduce using rule 28 (FunctionDef)
+
+
+State 88
+
+   31 ClassDef: KEYCLASS IDENTIFIER KEYEXTENDS IDENTIFIER SPLEFTBRACE PriviligeFields SPRIGHTBRACE .
+
+    $default  reduce using rule 31 (ClassDef)
+
+
+State 89
+
+   29 FunctionDef: KEYSTATIC Type IDENTIFIER SPLEFTPRNT Formals SPRIGHTPRNT StmtBlock .
+
+    $default  reduce using rule 29 (FunctionDef)
+
+
+State 90
+
+   27 MainFunction: KEYSTATIC TYPEVOID KEYMAIN SPLEFTPRNT SPRIGHTPRNT StmtBlock .
+
+    $default  reduce using rule 27 (MainFunction)
+
+
+State 91
+
+   46 StmtBlock: error SPRIGHTBRACE .
+
+    $default  reduce using rule 46 (StmtBlock)
+
+
+State 92
+
+   10 VariableDef: error . SPSEMICOLON
+   46 StmtBlock: error . SPRIGHTBRACE
+
+    SPSEMICOLON   shift, and go to state 17
+    SPRIGHTBRACE  shift, and go to state 91
+
+
+State 93
+
+   90 Expr: SPLEFTPRNT . Expr SPRIGHTPRNT
+  111     | SPLEFTPRNT . KEYCLASS IDENTIFIER SPRIGHTPRNT Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYCLASS        shift, and go to state 132
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 136
+    Constant    转到状态 131
+
+
+State 94
+
+   95 Expr: OPMINUS . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 137
+    Constant    转到状态 131
+
+
+State 95
+
+  104 Expr: OPNOT . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 138
+    Constant    转到状态 131
+
+
+State 96
+
+  108 Expr: KEYNEW . IDENTIFIER SPLEFTPRNT SPRIGHTPRNT
+  109     | KEYNEW . Type SPLEFTBRACKET Expr SPRIGHTBRACKET
+
+    TYPEVOID     shift, and go to state 2
+    TYPEINTEGER  shift, and go to state 3
+    TYPEFLOAT    shift, and go to state 4
+    TYPEBOOL     shift, and go to state 5
+    TYPESTRING   shift, and go to state 6
+    KEYCLASS     shift, and go to state 20
+    IDENTIFIER   shift, and go to state 139
+
+    Type  转到状态 140
+
+
+State 97
+
+   88 Expr: KEYTHIS .
+
+    $default  reduce using rule 88 (Expr)
+
+
+State 98
+
+  110 Expr: KEYINSTANCEOF . SPLEFTPRNT Expr SPCOMMA IDENTIFIER SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 141
+
+
+State 99
+
+   78 IfStmt: KEYIF . SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt
+   79       | KEYIF . SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt KEYELSE Stmt
+
+    SPLEFTPRNT  shift, and go to state 142
+
+
+State 100
+
+   75 ForStmt: KEYFOR . SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt
+   76        | KEYFOR . SPLEFTPRNT Variable SPCOLON IDENTIFIER SPRIGHTPRNT Stmt
+
+    SPLEFTPRNT  shift, and go to state 143
+
+
+State 101
+
+   77 WhileStmt: KEYWHILE . SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt
+
+    SPLEFTPRNT  shift, and go to state 144
+
+
+State 102
+
+   82 BreakStmt: KEYBREAK .
+
+    $default  reduce using rule 82 (BreakStmt)
+
+
+State 103
+
+   83 ContinueStmt: KEYCONTINUE .
+
+    $default  reduce using rule 83 (ContinueStmt)
+
+
+State 104
+
+   80 ReturnStmt: KEYRETURN .
+   81           | KEYRETURN . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    $default  reduce using rule 80 (ReturnStmt)
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 145
+    Constant    转到状态 131
+
+
+State 105
+
+   84 PrintStmt: KEYPRINT . SPLEFTPRNT Exprs SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 146
+
+
+State 106
+
+  105 Expr: KEYREADINTEGER . SPLEFTPRNT SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 147
+
+
+State 107
+
+  106 Expr: KEYREADLINE . SPLEFTPRNT SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 148
+
+
+State 108
+
+  107 Expr: KEYREADFLOAT . SPLEFTPRNT SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 149
+
+
+State 109
+
+  116 Constant: CONSTANTNULL .
+
+    $default  reduce using rule 116 (Constant)
+
+
+State 110
+
+  114 Constant: CONSTANTBOOL .
+
+    $default  reduce using rule 114 (Constant)
+
+
+State 111
+
+  112 Constant: CONSTANTINT .
+
+    $default  reduce using rule 112 (Constant)
+
+
+State 112
+
+  113 Constant: CONSTANTFLOAT .
+
+    $default  reduce using rule 113 (Constant)
+
+
+State 113
+
+  115 Constant: CONSTANTSTRING .
+
+    $default  reduce using rule 115 (Constant)
+
+
+State 114
+
+   63 LValue: IDENTIFIER .
+   69 Call: IDENTIFIER . SPLEFTPRNT Actuals SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 150
+
+    $default  reduce using rule 63 (LValue)
+
+
+State 115
+
+   49 Stmt: VariableDef .
+
+    $default  reduce using rule 49 (Stmt)
+
+
+State 116
+
+   58 Stmt: StmtBlock .
+
+    $default  reduce using rule 58 (Stmt)
+
+
+State 117
+
+   45 StmtBlock: SPLEFTBRACE Stmts . SPRIGHTBRACE
+
+    SPRIGHTBRACE  shift, and go to state 151
+
+
+State 118
+
+   48 Stmts: Stmt . Stmts
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON   reduce using rule 59 (SimpleStmt)
+    SPRIGHTBRACE  reduce using rule 47 (Stmts)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmts         转到状态 152
+    Stmt          转到状态 118
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 119
+
+   50 Stmt: SimpleStmt . SPSEMICOLON
+
+    SPSEMICOLON  shift, and go to state 153
+
+
+State 120
+
+   60 SimpleStmt: LValue . OPASSIGN Expr
+   67 SelfLvalue: LValue . OPSELFADD
+   68           | LValue . OPSELFMINUS
+   87 Expr: LValue .
+
+    OPASSIGN     shift, and go to state 154
+    OPSELFADD    shift, and go to state 155
+    OPSELFMINUS  shift, and go to state 156
+
+    $default  reduce using rule 87 (Expr)
+
+
+State 121
+
+   61 SimpleStmt: SelfLvalue .
+   66 LValue: SelfLvalue .
+
+    SPSEMICOLON  reduce using rule 61 (SimpleStmt)
+    SPRIGHTPRNT  reduce using rule 61 (SimpleStmt)
+    $default     reduce using rule 66 (LValue)
+
+
+State 122
+
+   62 SimpleStmt: Call .
+   89 Expr: Call .
+
+    SPSEMICOLON  reduce using rule 62 (SimpleStmt)
+    SPRIGHTPRNT  reduce using rule 62 (SimpleStmt)
+    $default     reduce using rule 89 (Expr)
+
+
+State 123
+
+   53 Stmt: ForStmt .
+
+    $default  reduce using rule 53 (Stmt)
+
+
+State 124
+
+   52 Stmt: WhileStmt .
+
+    $default  reduce using rule 52 (Stmt)
+
+
+State 125
+
+   51 Stmt: IfStmt .
+
+    $default  reduce using rule 51 (Stmt)
+
+
+State 126
+
+   56 Stmt: ReturnStmt . SPSEMICOLON
+
+    SPSEMICOLON  shift, and go to state 157
+
+
+State 127
+
+   54 Stmt: BreakStmt . SPSEMICOLON
+
+    SPSEMICOLON  shift, and go to state 158
+
+
+State 128
+
+   55 Stmt: ContinueStmt . SPSEMICOLON
+
+    SPSEMICOLON  shift, and go to state 159
+
+
+State 129
+
+   57 Stmt: PrintStmt . SPSEMICOLON
+
+    SPSEMICOLON  shift, and go to state 160
+
+
+State 130
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+
+State 131
+
+   86 Expr: Constant .
+
+    $default  reduce using rule 86 (Expr)
+
+
+State 132
+
+  111 Expr: SPLEFTPRNT KEYCLASS . IDENTIFIER SPRIGHTPRNT Expr
+
+    IDENTIFIER  shift, and go to state 175
+
+
+State 133
+
+   67 SelfLvalue: LValue . OPSELFADD
+   68           | LValue . OPSELFMINUS
+   87 Expr: LValue .
+
+    OPSELFADD    shift, and go to state 155
+    OPSELFMINUS  shift, and go to state 156
+
+    $default  reduce using rule 87 (Expr)
+
+
+State 134
+
+   66 LValue: SelfLvalue .
+
+    $default  reduce using rule 66 (LValue)
+
+
+State 135
+
+   89 Expr: Call .
+
+    $default  reduce using rule 89 (Expr)
+
+
+State 136
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   90 Expr: SPLEFTPRNT Expr . SPRIGHTPRNT
+   91     | Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPRIGHTPRNT    shift, and go to state 176
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+
+State 137
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   95     | OPMINUS Expr .
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 95 (Expr)
+
+
+State 138
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+  104     | OPNOT Expr .
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+
+    $default  reduce using rule 104 (Expr)
+
+
+State 139
+
+  108 Expr: KEYNEW IDENTIFIER . SPLEFTPRNT SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 177
+
+
+State 140
+
+   22 Type: Type . SPLEFTBRACKET SPRIGHTBRACKET
+  109 Expr: KEYNEW Type . SPLEFTBRACKET Expr SPRIGHTBRACKET
+
+    SPLEFTBRACKET  shift, and go to state 178
+
+
+State 141
+
+  110 Expr: KEYINSTANCEOF SPLEFTPRNT . Expr SPCOMMA IDENTIFIER SPRIGHTPRNT
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 179
+    Constant    转到状态 131
+
+
+State 142
+
+   78 IfStmt: KEYIF SPLEFTPRNT . BoolExpr SPRIGHTPRNT Stmt
+   79       | KEYIF SPLEFTPRNT . BoolExpr SPRIGHTPRNT Stmt KEYELSE Stmt
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    BoolExpr    转到状态 180
+    Expr        转到状态 181
+    Constant    转到状态 131
+
+
+State 143
+
+   75 ForStmt: KEYFOR SPLEFTPRNT . SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt
+   76        | KEYFOR SPLEFTPRNT . Variable SPCOLON IDENTIFIER SPRIGHTPRNT Stmt
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    $default  reduce using rule 59 (SimpleStmt)
+
+    Variable    转到状态 182
+    Type        转到状态 59
+    SimpleStmt  转到状态 183
+    LValue      转到状态 120
+    SelfLvalue  转到状态 121
+    Call        转到状态 122
+    Expr        转到状态 130
+    Constant    转到状态 131
+
+
+State 144
+
+   77 WhileStmt: KEYWHILE SPLEFTPRNT . BoolExpr SPRIGHTPRNT Stmt
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    BoolExpr    转到状态 184
+    Expr        转到状态 181
+    Constant    转到状态 131
+
+
+State 145
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   81 ReturnStmt: KEYRETURN Expr .
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 81 (ReturnStmt)
+
+
+State 146
+
+   84 PrintStmt: KEYPRINT SPLEFTPRNT . Exprs SPRIGHTPRNT
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Exprs       转到状态 185
+    Expr        转到状态 186
+    Constant    转到状态 131
+
+
+State 147
+
+  105 Expr: KEYREADINTEGER SPLEFTPRNT . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 187
+
+
+State 148
+
+  106 Expr: KEYREADLINE SPLEFTPRNT . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 188
+
+
+State 149
+
+  107 Expr: KEYREADFLOAT SPLEFTPRNT . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 189
+
+
+State 150
+
+   69 Call: IDENTIFIER SPLEFTPRNT . Actuals SPRIGHTPRNT
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    $default  reduce using rule 71 (Actuals)
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Actuals     转到状态 190
+    Exprs       转到状态 191
+    Expr        转到状态 186
+    Constant    转到状态 131
+
+
+State 151
+
+   45 StmtBlock: SPLEFTBRACE Stmts SPRIGHTBRACE .
+
+    $default  reduce using rule 45 (StmtBlock)
+
+
+State 152
+
+   48 Stmts: Stmt Stmts .
+
+    $default  reduce using rule 48 (Stmts)
+
+
+State 153
+
+   50 Stmt: SimpleStmt SPSEMICOLON .
+
+    $default  reduce using rule 50 (Stmt)
+
+
+State 154
+
+   60 SimpleStmt: LValue OPASSIGN . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 192
+    Constant    转到状态 131
+
+
+State 155
+
+   67 SelfLvalue: LValue OPSELFADD .
+
+    $default  reduce using rule 67 (SelfLvalue)
+
+
+State 156
+
+   68 SelfLvalue: LValue OPSELFMINUS .
+
+    $default  reduce using rule 68 (SelfLvalue)
+
+
+State 157
+
+   56 Stmt: ReturnStmt SPSEMICOLON .
+
+    $default  reduce using rule 56 (Stmt)
+
+
+State 158
+
+   54 Stmt: BreakStmt SPSEMICOLON .
+
+    $default  reduce using rule 54 (Stmt)
+
+
+State 159
+
+   55 Stmt: ContinueStmt SPSEMICOLON .
+
+    $default  reduce using rule 55 (Stmt)
+
+
+State 160
+
+   57 Stmt: PrintStmt SPSEMICOLON .
+
+    $default  reduce using rule 57 (Stmt)
+
+
+State 161
+
+   64 LValue: Expr SPDOT . IDENTIFIER
+   70 Call: Expr SPDOT . IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+
+    IDENTIFIER  shift, and go to state 193
+
+
+State 162
+
+   65 LValue: Expr SPLEFTBRACKET . Expr SPRIGHTBRACKET
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 194
+    Constant    转到状态 131
+
+
+State 163
+
+   91 Expr: Expr OPPLUS . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 195
+    Constant    转到状态 131
+
+
+State 164
+
+   92 Expr: Expr OPMINUS . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 196
+    Constant    转到状态 131
+
+
+State 165
+
+   93 Expr: Expr OPMULTIPLY . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 197
+    Constant    转到状态 131
+
+
+State 166
+
+   94 Expr: Expr OPDIVIDE . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 198
+    Constant    转到状态 131
+
+
+State 167
+
+  102 Expr: Expr OPAND . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 199
+    Constant    转到状态 131
+
+
+State 168
+
+  103 Expr: Expr OPOR . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 200
+    Constant    转到状态 131
+
+
+State 169
+
+  100 Expr: Expr OPEQUAL . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 201
+    Constant    转到状态 131
+
+
+State 170
+
+  101 Expr: Expr OPNOTEQUAL . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 202
+    Constant    转到状态 131
+
+
+State 171
+
+   98 Expr: Expr OPGREAT . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 203
+    Constant    转到状态 131
+
+
+State 172
+
+   96 Expr: Expr OPLIGHT . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 204
+    Constant    转到状态 131
+
+
+State 173
+
+   99 Expr: Expr OPGREATEQ . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 205
+    Constant    转到状态 131
+
+
+State 174
+
+   97 Expr: Expr OPLIGHTEQ . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 206
+    Constant    转到状态 131
+
+
+State 175
+
+  111 Expr: SPLEFTPRNT KEYCLASS IDENTIFIER . SPRIGHTPRNT Expr
+
+    SPRIGHTPRNT  shift, and go to state 207
+
+
+State 176
+
+   90 Expr: SPLEFTPRNT Expr SPRIGHTPRNT .
+
+    $default  reduce using rule 90 (Expr)
+
+
+State 177
+
+  108 Expr: KEYNEW IDENTIFIER SPLEFTPRNT . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 208
+
+
+State 178
+
+   22 Type: Type SPLEFTBRACKET . SPRIGHTBRACKET
+  109 Expr: KEYNEW Type SPLEFTBRACKET . Expr SPRIGHTBRACKET
+
+    SPLEFTPRNT      shift, and go to state 93
+    SPRIGHTBRACKET  shift, and go to state 42
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 209
+    Constant    转到状态 131
+
+
+State 179
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+  110     | KEYINSTANCEOF SPLEFTPRNT Expr . SPCOMMA IDENTIFIER SPRIGHTPRNT
+
+    SPCOMMA        shift, and go to state 210
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+
+State 180
+
+   78 IfStmt: KEYIF SPLEFTPRNT BoolExpr . SPRIGHTPRNT Stmt
+   79       | KEYIF SPLEFTPRNT BoolExpr . SPRIGHTPRNT Stmt KEYELSE Stmt
+
+    SPRIGHTPRNT  shift, and go to state 211
+
+
+State 181
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   85 BoolExpr: Expr .
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 85 (BoolExpr)
+
+
+State 182
+
+   14 Variable: Variable . SPLEFTBRACKET IDENTIFIER SPRIGHTBRACKET
+   15         | Variable . SPLEFTBRACKET CONSTANTINT SPRIGHTBRACKET
+   76 ForStmt: KEYFOR SPLEFTPRNT Variable . SPCOLON IDENTIFIER SPRIGHTPRNT Stmt
+
+    SPCOLON        shift, and go to state 212
+    SPLEFTBRACKET  shift, and go to state 28
+
+
+State 183
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt . SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt
+
+    SPSEMICOLON  shift, and go to state 213
+
+
+State 184
+
+   77 WhileStmt: KEYWHILE SPLEFTPRNT BoolExpr . SPRIGHTPRNT Stmt
+
+    SPRIGHTPRNT  shift, and go to state 214
+
+
+State 185
+
+   74 Exprs: Exprs . SPCOMMA Expr
+   84 PrintStmt: KEYPRINT SPLEFTPRNT Exprs . SPRIGHTPRNT
+
+    SPCOMMA      shift, and go to state 215
+    SPRIGHTPRNT  shift, and go to state 216
+
+
+State 186
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   73 Exprs: Expr .
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 73 (Exprs)
+
+
+State 187
+
+  105 Expr: KEYREADINTEGER SPLEFTPRNT SPRIGHTPRNT .
+
+    $default  reduce using rule 105 (Expr)
+
+
+State 188
+
+  106 Expr: KEYREADLINE SPLEFTPRNT SPRIGHTPRNT .
+
+    $default  reduce using rule 106 (Expr)
+
+
+State 189
+
+  107 Expr: KEYREADFLOAT SPLEFTPRNT SPRIGHTPRNT .
+
+    $default  reduce using rule 107 (Expr)
+
+
+State 190
+
+   69 Call: IDENTIFIER SPLEFTPRNT Actuals . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 217
+
+
+State 191
+
+   72 Actuals: Exprs .
+   74 Exprs: Exprs . SPCOMMA Expr
+
+    SPCOMMA  shift, and go to state 215
+
+    $default  reduce using rule 72 (Actuals)
+
+
+State 192
+
+   60 SimpleStmt: LValue OPASSIGN Expr .
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 60 (SimpleStmt)
+
+
+State 193
+
+   64 LValue: Expr SPDOT IDENTIFIER .
+   70 Call: Expr SPDOT IDENTIFIER . SPLEFTPRNT Actuals SPRIGHTPRNT
+
+    SPLEFTPRNT  shift, and go to state 218
+
+    $default  reduce using rule 64 (LValue)
+
+
+State 194
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   65       | Expr SPLEFTBRACKET Expr . SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT           shift, and go to state 161
+    SPLEFTBRACKET   shift, and go to state 162
+    SPRIGHTBRACKET  shift, and go to state 219
+    OPPLUS          shift, and go to state 163
+    OPMINUS         shift, and go to state 164
+    OPMULTIPLY      shift, and go to state 165
+    OPDIVIDE        shift, and go to state 166
+    OPAND           shift, and go to state 167
+    OPOR            shift, and go to state 168
+    OPEQUAL         shift, and go to state 169
+    OPNOTEQUAL      shift, and go to state 170
+    OPGREAT         shift, and go to state 171
+    OPLIGHT         shift, and go to state 172
+    OPGREATEQ       shift, and go to state 173
+    OPLIGHTEQ       shift, and go to state 174
+
+
+State 195
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   91     | Expr OPPLUS Expr .
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 91 (Expr)
+
+
+State 196
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   92     | Expr OPMINUS Expr .
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 92 (Expr)
+
+
+State 197
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   93     | Expr OPMULTIPLY Expr .
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+
+    $default  reduce using rule 93 (Expr)
+
+
+State 198
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   94     | Expr OPDIVIDE Expr .
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+
+    $default  reduce using rule 94 (Expr)
+
+
+State 199
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  102     | Expr OPAND Expr .
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 102 (Expr)
+
+
+State 200
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+  103     | Expr OPOR Expr .
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 103 (Expr)
+
+
+State 201
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  100     | Expr OPEQUAL Expr .
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 100 (Expr)
+
+
+State 202
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  101     | Expr OPNOTEQUAL Expr .
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 101 (Expr)
+
+
+State 203
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   98     | Expr OPGREAT Expr .
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 98 (Expr)
+
+
+State 204
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   96     | Expr OPLIGHT Expr .
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 96 (Expr)
+
+
+State 205
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+   99     | Expr OPGREATEQ Expr .
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 99 (Expr)
+
+
+State 206
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   97     | Expr OPLIGHTEQ Expr .
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+
+    $default  reduce using rule 97 (Expr)
+
+
+State 207
+
+  111 Expr: SPLEFTPRNT KEYCLASS IDENTIFIER SPRIGHTPRNT . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 220
+    Constant    转到状态 131
+
+
+State 208
+
+  108 Expr: KEYNEW IDENTIFIER SPLEFTPRNT SPRIGHTPRNT .
+
+    $default  reduce using rule 108 (Expr)
+
+
+State 209
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+  109     | KEYNEW Type SPLEFTBRACKET Expr . SPRIGHTBRACKET
+
+    SPDOT           shift, and go to state 161
+    SPLEFTBRACKET   shift, and go to state 162
+    SPRIGHTBRACKET  shift, and go to state 221
+    OPPLUS          shift, and go to state 163
+    OPMINUS         shift, and go to state 164
+    OPMULTIPLY      shift, and go to state 165
+    OPDIVIDE        shift, and go to state 166
+    OPAND           shift, and go to state 167
+    OPOR            shift, and go to state 168
+    OPEQUAL         shift, and go to state 169
+    OPNOTEQUAL      shift, and go to state 170
+    OPGREAT         shift, and go to state 171
+    OPLIGHT         shift, and go to state 172
+    OPGREATEQ       shift, and go to state 173
+    OPLIGHTEQ       shift, and go to state 174
+
+
+State 210
+
+  110 Expr: KEYINSTANCEOF SPLEFTPRNT Expr SPCOMMA . IDENTIFIER SPRIGHTPRNT
+
+    IDENTIFIER  shift, and go to state 222
+
+
+State 211
+
+   78 IfStmt: KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT . Stmt
+   79       | KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT . Stmt KEYELSE Stmt
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON  reduce using rule 59 (SimpleStmt)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmt          转到状态 223
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 212
+
+   76 ForStmt: KEYFOR SPLEFTPRNT Variable SPCOLON . IDENTIFIER SPRIGHTPRNT Stmt
+
+    IDENTIFIER  shift, and go to state 224
+
+
+State 213
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON . BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    BoolExpr    转到状态 225
+    Expr        转到状态 181
+    Constant    转到状态 131
+
+
+State 214
+
+   77 WhileStmt: KEYWHILE SPLEFTPRNT BoolExpr SPRIGHTPRNT . Stmt
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON  reduce using rule 59 (SimpleStmt)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmt          转到状态 226
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 215
+
+   74 Exprs: Exprs SPCOMMA . Expr
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Expr        转到状态 227
+    Constant    转到状态 131
+
+
+State 216
+
+   84 PrintStmt: KEYPRINT SPLEFTPRNT Exprs SPRIGHTPRNT .
+
+    $default  reduce using rule 84 (PrintStmt)
+
+
+State 217
+
+   69 Call: IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT .
+
+    $default  reduce using rule 69 (Call)
+
+
+State 218
+
+   70 Call: Expr SPDOT IDENTIFIER SPLEFTPRNT . Actuals SPRIGHTPRNT
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    $default  reduce using rule 71 (Actuals)
+
+    LValue      转到状态 133
+    SelfLvalue  转到状态 134
+    Call        转到状态 135
+    Actuals     转到状态 228
+    Exprs       转到状态 191
+    Expr        转到状态 186
+    Constant    转到状态 131
+
+
+State 219
+
+   65 LValue: Expr SPLEFTBRACKET Expr SPRIGHTBRACKET .
+
+    $default  reduce using rule 65 (LValue)
+
+
+State 220
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+  111     | SPLEFTPRNT KEYCLASS IDENTIFIER SPRIGHTPRNT Expr .
+
+    $default  reduce using rule 111 (Expr)
+
+
+State 221
+
+  109 Expr: KEYNEW Type SPLEFTBRACKET Expr SPRIGHTBRACKET .
+
+    $default  reduce using rule 109 (Expr)
+
+
+State 222
+
+  110 Expr: KEYINSTANCEOF SPLEFTPRNT Expr SPCOMMA IDENTIFIER . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 229
+
+
+State 223
+
+   78 IfStmt: KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt .
+   79       | KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt . KEYELSE Stmt
+
+    KEYELSE  shift, and go to state 230
+
+    $default  reduce using rule 78 (IfStmt)
+
+
+State 224
+
+   76 ForStmt: KEYFOR SPLEFTPRNT Variable SPCOLON IDENTIFIER . SPRIGHTPRNT Stmt
+
+    SPRIGHTPRNT  shift, and go to state 231
+
+
+State 225
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr . SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt
+
+    SPSEMICOLON  shift, and go to state 232
+
+
+State 226
+
+   77 WhileStmt: KEYWHILE SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt .
+
+    $default  reduce using rule 77 (WhileStmt)
+
+
+State 227
+
+   64 LValue: Expr . SPDOT IDENTIFIER
+   65       | Expr . SPLEFTBRACKET Expr SPRIGHTBRACKET
+   70 Call: Expr . SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT
+   74 Exprs: Exprs SPCOMMA Expr .
+   91 Expr: Expr . OPPLUS Expr
+   92     | Expr . OPMINUS Expr
+   93     | Expr . OPMULTIPLY Expr
+   94     | Expr . OPDIVIDE Expr
+   96     | Expr . OPLIGHT Expr
+   97     | Expr . OPLIGHTEQ Expr
+   98     | Expr . OPGREAT Expr
+   99     | Expr . OPGREATEQ Expr
+  100     | Expr . OPEQUAL Expr
+  101     | Expr . OPNOTEQUAL Expr
+  102     | Expr . OPAND Expr
+  103     | Expr . OPOR Expr
+
+    SPDOT          shift, and go to state 161
+    SPLEFTBRACKET  shift, and go to state 162
+    OPPLUS         shift, and go to state 163
+    OPMINUS        shift, and go to state 164
+    OPMULTIPLY     shift, and go to state 165
+    OPDIVIDE       shift, and go to state 166
+    OPAND          shift, and go to state 167
+    OPOR           shift, and go to state 168
+    OPEQUAL        shift, and go to state 169
+    OPNOTEQUAL     shift, and go to state 170
+    OPGREAT        shift, and go to state 171
+    OPLIGHT        shift, and go to state 172
+    OPGREATEQ      shift, and go to state 173
+    OPLIGHTEQ      shift, and go to state 174
+
+    $default  reduce using rule 74 (Exprs)
+
+
+State 228
+
+   70 Call: Expr SPDOT IDENTIFIER SPLEFTPRNT Actuals . SPRIGHTPRNT
+
+    SPRIGHTPRNT  shift, and go to state 233
+
+
+State 229
+
+  110 Expr: KEYINSTANCEOF SPLEFTPRNT Expr SPCOMMA IDENTIFIER SPRIGHTPRNT .
+
+    $default  reduce using rule 110 (Expr)
+
+
+State 230
+
+   79 IfStmt: KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt KEYELSE . Stmt
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON  reduce using rule 59 (SimpleStmt)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmt          转到状态 234
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 231
+
+   76 ForStmt: KEYFOR SPLEFTPRNT Variable SPCOLON IDENTIFIER SPRIGHTPRNT . Stmt
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON  reduce using rule 59 (SimpleStmt)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmt          转到状态 235
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 232
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON . SimpleStmt SPRIGHTPRNT Stmt
+
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    $default  reduce using rule 59 (SimpleStmt)
+
+    SimpleStmt  转到状态 236
+    LValue      转到状态 120
+    SelfLvalue  转到状态 121
+    Call        转到状态 122
+    Expr        转到状态 130
+    Constant    转到状态 131
+
+
+State 233
+
+   70 Call: Expr SPDOT IDENTIFIER SPLEFTPRNT Actuals SPRIGHTPRNT .
+
+    $default  reduce using rule 70 (Call)
+
+
+State 234
+
+   79 IfStmt: KEYIF SPLEFTPRNT BoolExpr SPRIGHTPRNT Stmt KEYELSE Stmt .
+
+    $default  reduce using rule 79 (IfStmt)
+
+
+State 235
+
+   76 ForStmt: KEYFOR SPLEFTPRNT Variable SPCOLON IDENTIFIER SPRIGHTPRNT Stmt .
+
+    $default  reduce using rule 76 (ForStmt)
+
+
+State 236
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt . SPRIGHTPRNT Stmt
+
+    SPRIGHTPRNT  shift, and go to state 237
+
+
+State 237
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT . Stmt
+
+    error           shift, and go to state 92
+    SPLEFTBRACE     shift, and go to state 86
+    SPLEFTPRNT      shift, and go to state 93
+    OPMINUS         shift, and go to state 94
+    OPNOT           shift, and go to state 95
+    TYPEVOID        shift, and go to state 2
+    TYPEINTEGER     shift, and go to state 3
+    TYPEFLOAT       shift, and go to state 4
+    TYPEBOOL        shift, and go to state 5
+    TYPESTRING      shift, and go to state 6
+    KEYCLASS        shift, and go to state 20
+    KEYNEW          shift, and go to state 96
+    KEYTHIS         shift, and go to state 97
+    KEYINSTANCEOF   shift, and go to state 98
+    KEYIF           shift, and go to state 99
+    KEYFOR          shift, and go to state 100
+    KEYWHILE        shift, and go to state 101
+    KEYBREAK        shift, and go to state 102
+    KEYCONTINUE     shift, and go to state 103
+    KEYRETURN       shift, and go to state 104
+    KEYPRINT        shift, and go to state 105
+    KEYREADINTEGER  shift, and go to state 106
+    KEYREADLINE     shift, and go to state 107
+    KEYREADFLOAT    shift, and go to state 108
+    CONSTANTNULL    shift, and go to state 109
+    CONSTANTBOOL    shift, and go to state 110
+    CONSTANTINT     shift, and go to state 111
+    CONSTANTFLOAT   shift, and go to state 112
+    CONSTANTSTRING  shift, and go to state 113
+    IDENTIFIER      shift, and go to state 114
+
+    SPSEMICOLON  reduce using rule 59 (SimpleStmt)
+
+    VariableDef   转到状态 115
+    Variable      转到状态 13
+    Type          转到状态 59
+    StmtBlock     转到状态 116
+    Stmt          转到状态 238
+    SimpleStmt    转到状态 119
+    LValue        转到状态 120
+    SelfLvalue    转到状态 121
+    Call          转到状态 122
+    ForStmt       转到状态 123
+    WhileStmt     转到状态 124
+    IfStmt        转到状态 125
+    ReturnStmt    转到状态 126
+    BreakStmt     转到状态 127
+    ContinueStmt  转到状态 128
+    PrintStmt     转到状态 129
+    Expr          转到状态 130
+    Constant      转到状态 131
+
+
+State 238
+
+   75 ForStmt: KEYFOR SPLEFTPRNT SimpleStmt SPSEMICOLON BoolExpr SPSEMICOLON SimpleStmt SPRIGHTPRNT Stmt .
+
+    $default  reduce using rule 75 (ForStmt)

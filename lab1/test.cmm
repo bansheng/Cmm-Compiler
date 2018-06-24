@@ -1,0 +1,52 @@
+class test
+{
+public:
+    int m;
+    int a;
+    void display(int a, int b)
+    {
+        
+        int x; //test
+        float f;
+        bool b, d, e;
+        string s;
+        x = 211;
+        int[] a[x];
+        for(int i: a){
+        	print(i);
+        }
+        
+        x --;
+        f = 0.001;
+        b = true;
+        d = b;
+        e = false;
+        s = "just test";
+        
+        if (a == b)
+        {
+            if (c == d)
+                print("ifif");
+            else
+                print("ifelse");
+            continue;
+        }
+        else
+        {
+            if (c == d)
+                print("elseif");
+            else
+                print("elseelse");
+        }
+    }   
+}
+
+int a;
+
+int pp(){
+	class test t;
+	t = new test();
+	return 1;
+}
+
+
